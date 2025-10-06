@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expense Tracker</title>
+  <link rel="stylesheet" href="stylesheet.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="wrapper">
+    <div class="expense_wrapper">
+      <h1 class="title">Expenses Tracker</h1>
+      <div class="balance-wrapper">
+        <div class="balance-title">Total Balance</div>
+        <h1 class="total_amount">0</h1>
+      </div>
+      <div class="add-btn">
+          <button class="green_btn">Add Income</button>
+          <button class="red_btn">Add Expense</button>
+      </div>
+      <div class="transactions">
+        <div class="trans-title">Transactions</div>
+        <ol class="trans_data">
+         
+        </ol>
+      </div>
+
+    </div>
+  </div>
+  <div class="popup_wrapper">
+    <div class="popup_container income">
+      <label>Income</label>
+      <input class="amount_value" type="number" placeholder="Amount">
+      <input class="description_value" type="text" placeholder="Description">
+      <div class="btn_container">
+        <button class="save_btn">Save</button>
+      <button class="cancel_btn cancel_income">cancel</button>
+
+      </div>
+      
+    </div>
+    <div class="popup_container expense">
+      <label>Expense</label>
+      <input class="amount_value" type="number" placeholder="Amount">
+      <input class="description_value" type="text" placeholder="Description">
+      <div class="btn_container">
+        <button class="save_btn expense_update">Save</button>
+      <button class="cancel_btn cancel_expense">cancel</button>
+
+      </div>
+      
+
+    </div>
+    <div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="script.js"></script>
+</body>
+</html>
