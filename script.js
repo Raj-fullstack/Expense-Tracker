@@ -1,133 +1,157 @@
-// Add income popup open
-document.getElementsByClassName("green_btn")[0].addEventListener("click", function () {
-  document.getElementsByClassName("popup_wrapper")[0].style.display = "flex";
-      document.getElementsByClassName("expense")[0].style.display="none";
-  document.getElementsByClassName("income")[0].style.display="flex";
 
-});
+const $ = (selector) => document.querySelector(selector);
+const $$ = (selector) => document.querySelectorAll(selector);
 
-//document.addEventListener("click", dropDownClose);
+//Popup open
+$(".green_btn").addEventListener("click", () => togglePopup("income"));
+$(".red_btn").addEventListener("click", () => togglePopup("expense"));
+//cancel Btn
+$(".cancel_income").addEventListener("click", closePopup);
+$(".cancel_expense").addEventListener("click", closePopup);
+// Save btn
+$(".save_btn").addEventListener("click", () => handleTransaction("income"));
+$(".expense_update").addEventListener("click", () => handleTransaction("expense"));
+//popup 
+function togglePopup(type) {
+  $(".popup_wrapper").style.display = "flex";
+  $(".income").style.display = type === "income" ? "flex" : "none";
+  $(".expense").style.display = type === "expense" ? "flex" : "none";
+}
+function closePopup() {
+  $(".popup_wrapper").style.display = "none";
+  clearInputs();
+}
 
-// function dropDownClose(e){
-//     var dropdown = document.getElementsByClassName("more_action")[0];
-//     if(!dropdown.contains(e.target)){
-//         dropdown.style.display = "none";
-//     console.log(e);
-//     }
-// }
-// cancel btn
-document.getElementsByClassName('cancel_income')[0].addEventListener("click",function (){
-      document.getElementsByClassName("popup_wrapper")[0].style.display="none";
-})
-document.getElementsByClassName('cancel_expense')[0].addEventListener("click",function (){
-      document.getElementsByClassName("popup_wrapper")[0].style.display="none";
-})
+// inocome or expense type check
+function handleTransaction(type) {
+  let index = type == "income" ? 0 : 1;
+ 
+  let amountElem = $$(".amount_value")[index];// document.getElementbyclassname("amount")
+  let descElem = $$(".description_value")[index];
 
+  let net = amountElem.value.trim();
+  console.log(net)
+  let description = descElem.value.trim();
+  let color = type === "income" ? "color1" : "color2";
+  let sign = type === "income" ? 1 : -1;
+  console.log(sign);
 
-// Popup save button
-document.getElementsByClassName("save_btn")[0].addEventListener("click", function () {
+  // Validation
+  if (!net || isNaN(net)) {
+    showError(amountElem, "Please enter a valid amount");
+    return;
+  }
+  if (!description) {
+    showError(descElem, "Description is required");
+    return;
+  }
+  trans_list(net, description, color, type);
+  //update bal
+  const totalElem = $(".total_amount");
+  const total = parseInt(totalElem.innerText) || 0;
+  totalElem.innerText = total + sign * parseInt(net);
+  closePopup();
+}
+
+// Create li
+function trans_list(amount, description, color, type) {
+  let list = document.createElement("li");
+  list.setAttribute("list-type",type);
+  list.className = `list_container ${color}`;
+
+  let descDiv = document.createElement("div");
+  descDiv.textContent = description;
+
+  let amountDiv = document.createElement("div");
+  amountDiv.className = "amount-trans";
+  amountDiv.innerHTML = amount;
+
+  let iconDiv = document.createElement("div");
+  iconDiv.className = "dot";
+  iconDiv.innerHTML = '<i class="fa fa-ellipsis-v"></i>';
+
+  let actionMenu = document.createElement("ul");
+  actionMenu.className = "more_action";
+  actionMenu.style.display = "none";
+
+  let editItem = document.createElement("li");
+  editItem.className = "edit_btn";
+  editItem.textContent = "Edit";
+  let deleteItem = document.createElement("li");
+  deleteItem.textContent = "Delete";
+
+  actionMenu.append(editItem, deleteItem);
+  iconDiv.append(actionMenu);
+  amountDiv.append(iconDiv);
+
+  list.append(descDiv, amountDiv);
+  $(".trans_data").append(list);
+   //delete
+   deleteItem.addEventListener("click", deleteItems);
+ 
+  function deleteItems(){
+  console.log($(".total_amount").innerText);
+   let getAmount=parseInt( $(".total_amount").innerText);
+   let net = parseInt(amount);
+   let subt=net + getAmount;
+   $(".total_amount").innerText = subt;
+ console.log(subt);
+
+    list.remove();
+  }
+ 
+
   
-    let net = document.getElementsByClassName("amount_value")[0].value;
-  let description = document.getElementsByClassName("description_value")[0].value;
-  var color_code = "color1";
-
-
-let amount=trans_list(net,description,color_code);
-  // Reset popup
-  document.getElementsByClassName("popup_wrapper")[0].style.display = "none";
-  document.getElementsByClassName("amount_value")[0].value = "";
-  document.getElementsByClassName("description_value")[0].value = "";
-  // total bal
-  var total_amount = document.getElementsByClassName("total_amount")[0].innerText;
-  var total = parseInt(total_amount);
-  var amount_parse = parseInt(net);
-  var balance = total + amount_parse;
-  document.getElementsByClassName("total_amount")[0].innerHTML= balance;
-  
+editItem.addEventListener("click", function(){
+  var list_type = list.getAttribute("list-type");
+  editList(list_type,description,amount);
+  list.remove();
 });
-document.getElementsByClassName("red_btn")[0].addEventListener("click", function () {
-    document.getElementsByClassName("popup_wrapper")[0].style.display = "flex";
-    document.getElementsByClassName("income")[0].style.display="none";
-      document.getElementsByClassName("expense")[0].style.display="flex";
-});
-    // Popup save button
-document.getElementsByClassName("expense_update")[0].addEventListener("click", function () {
-  
-    let net = document.getElementsByClassName("amount_value")[1].value;
-  let description = document.getElementsByClassName("description_value")[1].value;
-  var color_code = "color2"
-
-let amount=trans_list(net,description,color_code);
-  // Reset popup
-  document.getElementsByClassName("popup_wrapper")[0].style.display = "none";
-  document.getElementsByClassName("amount_value")[1].value = "";
-  document.getElementsByClassName("description_value")[1].value = "";
-  // total bal
-  var total_amount = document.getElementsByClassName("total_amount")[0].innerText;
-  var total = parseInt(total_amount);
-  var amount_parse = parseInt(net);
-  console.log(total_amount);
-  console.log(net);
-  console.log(total - amount_parse);
-  var balance = total - amount_parse;
-  document.getElementsByClassName("total_amount")[0].innerHTML= balance;
-//})
-
-})
-
-
-
-function trans_list(arg,arg1,color_code){
-  // Create elements
-  let Item_list = document.createElement("li");
-  Item_list.setAttribute("class", "list_container "+color_code);
-
-  let Item_amount = document.createElement("div");
-  Item_amount.setAttribute("class","amount-trans");
-  let Item_desc = document.createElement("div");
-
-  let icon_wrapper = document.createElement("ul");
-  icon_wrapper.setAttribute("class", "more_action");
-  icon_wrapper.style.display = "none";
-
-  let edit = document.createElement("li");
-  edit.innerText = "Edit";
-
-  let delet = document.createElement("li");
-  delet.innerText = "Delete";
-
-  let icon = document.createElement("div");
-  icon.setAttribute("class", "dot");
-  icon.innerHTML = '<i class="fa fa-ellipsis-v"></i>';
-
-  // Append edit/delete 
-  icon_wrapper.append(edit, delet);
-  icon.append(icon_wrapper);
-
-  // Assign values
-  Item_amount.innerHTML =arg;
-  Item_desc.textContent = arg1;
-
-  // Append to list
-  Item_amount.append(icon);
-  Item_list.append(Item_desc);
-  Item_list.append(Item_amount);
-
-  // dot click
-   icon.addEventListener("click", function () {
-    icon_wrapper.style.display ="block";
-      
+//menu
+  iconDiv.addEventListener("click", (e) => {
+    console.log(e);
+    e.stopPropagation();
+    actionMenu.style.display = actionMenu.style.display === "block" ? "none" : "block";
   });
-  // edite click
-  edit.addEventListener("click",function(){
 
-  })
-  //delete click
-  delet.addEventListener("click",function(){
+   document.addEventListener("click", (e) => {
+    if (!iconDiv.contains(e.target)) actionMenu.style.display = "none";
+  });
+}
 
-  })
+ 
+ 
+// Error Handling
+function showError(inputElem, message) {
+  let errorElem = inputElem.parentNode.querySelector(".error");
+  if (!errorElem) {
+    errorElem = document.createElement("div");
+    errorElem.className = "error";
+    inputElem.parentNode.appendChild(errorElem);
+  }
+  errorElem.textContent = message;
+  inputElem.classList.add("error_border");
+  inputElem.addEventListener("input", () => {
+    errorElem.textContent = "";
+    inputElem.classList.remove("error_border");
+  });
+}
 
-  // Add to transaction list
-  document.getElementsByClassName("trans_data")[0].append(Item_list);
-  //return amount;
+  function editList(type,des,amount){
+  $(".popup_wrapper").style.display = "flex";
+  $(".income").style.display = type === "income" ? "flex" : "none";
+  $(".expense").style.display = type === "expense" ? "flex" : "none";
+
+  let index = type === "income" ? 0 : 1;
+  let amountElem = $$(".amount_value")[index];
+  let descElem = $$(".description_value")[index];
+
+   amountElem.value = amount;
+   descElem.value = des;
+  }
+
+// Reset inputs
+function clearInputs() {
+  $$(".amount_value").forEach((i) => (i.value = ""));
+  $$(".description_value").forEach((i) => (i.value = ""));
 }
